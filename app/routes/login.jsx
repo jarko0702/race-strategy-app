@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Paper,
@@ -9,11 +9,15 @@ import {
   Link,
   FormControlLabel,
   Checkbox,
+  Alert,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Header from "~/components/header";
+import Header from "../components/header";
+
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const Login = () => {
+  // Syles for sign in card
   const paperStyle = {
     padding: 20,
     height: "70vh",
@@ -22,9 +26,39 @@ const Login = () => {
   };
   const avatarStyle = { backgroundColor: "#1bbd7e" };
   const btnstyle = { margin: "8px 0" };
+
+  const [emailState, setEmail] = useState();
+  const [passwordState, setPassword] = useState();
+  const [errorMessage, setErrorMessage] = useState();
+
+  const auth = getAuth();
+
+  function onSignInClick(email, password) {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        setErrorMessage(error.message);
+        // ..
+      });
+  }
+
+  function Error({ errorMessage }) {
+    if (!errorMessage) {
+      return <></>;
+    } else {
+      return <Alert severity="error">{errorMessage}</Alert>;
+    }
+  }
+
   return (
     <>
       <Header />
+      <Error errorMessage={errorMessage} />
       <Grid>
         <Paper elevation={10} style={paperStyle}>
           <Grid align="center">
@@ -40,6 +74,7 @@ const Login = () => {
             variant="outlined"
             fullWidth
             required
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="dense"
@@ -49,6 +84,7 @@ const Login = () => {
             variant="outlined"
             fullWidth
             required
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FormControlLabel
             control={<Checkbox name="checkedB" color="primary" />}
@@ -60,6 +96,7 @@ const Login = () => {
             variant="contained"
             style={btnstyle}
             fullWidth
+            onClick={() => onSignInClick(emailState, passwordState)}
           >
             Sign in
           </Button>
