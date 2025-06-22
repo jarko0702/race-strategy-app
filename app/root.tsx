@@ -25,21 +25,25 @@ export const links: Route.LinksFunction = () => [
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.API_KEY,
+  apiKey: "AIzaSyDwUBTLWIg61tWSlmYCDzBBL38D-tIcc7M",
   authDomain: "race-stratagy-app.firebaseapp.com",
   projectId: "race-stratagy-app",
   storageBucket: "race-stratagy-app.firebasestorage.app",
-  messagingSenderId: import.meta.env.MESSAGING_SENDER_ID,
-  appId: import.meta.env.APP_ID,
+  messagingSenderId: "483016136977",
+  appId: "1:483016136977:web:bb0826a94e1ffd4cfdd4b0",
 };
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
+export const auth = getAuth();
+export const db = getFirestore();
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

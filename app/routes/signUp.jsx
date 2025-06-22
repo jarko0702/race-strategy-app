@@ -13,10 +13,14 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Header from "../components/header";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db } from "../root";
+import { useNavigate } from "react-router";
+import { doc, setDoc } from "firebase/firestore";
 
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+const SignUp = () => {
+  let navigate = useNavigate();
 
-const Login = () => {
   // Syles for sign in card
   const paperStyle = {
     padding: 20,
@@ -27,26 +31,33 @@ const Login = () => {
   const avatarStyle = { backgroundColor: "#1bbd7e" };
   const btnstyle = { margin: "8px 0" };
 
+  //State initialzation
+  const [nameState, setNameState] = useState();
   const [emailState, setEmail] = useState();
   const [passwordState, setPassword] = useState();
   const [errorMessage, setErrorMessage] = useState();
 
-  const auth = getAuth();
-
-  function onSignInClick(email, password) {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed up
+  function onSignUpClick(email, password) {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
         const user = userCredential.user;
-        // ...
+        // TODO upate displayName
+        await updateProfile(auth.currentUser, { displayName: nameState });
+        console.log(user.uid);
+        console.log(user.displayName);
+        await setDoc(doc(db, "Users", user.uid), {
+          uid: user.uid,
+          name: user.displayName,
+          role: "guest",
+        });
+        return navigate("/profile");
       })
       .catch((error) => {
-        const errorCode = error.code;
-        setErrorMessage(error.message);
-        // ..
+        console.log(error.message);
       });
   }
 
+  // Error alert component
   function Error({ errorMessage }) {
     if (!errorMessage) {
       return <></>;
@@ -65,13 +76,26 @@ const Login = () => {
             <Avatar style={avatarStyle}>
               <LockOutlinedIcon />
             </Avatar>
-            <h2>Sign In</h2>
+            <h2>Create account</h2>
           </Grid>
           <TextField
             margin="dense"
-            label="Username"
-            placeholder="Enter username"
+            label="Name"
+            placeholder="Enter name"
             variant="outlined"
+            fullWidth
+            required
+            onChange={(e) => {
+              setNameState(e.target.value);
+              console.log(nameState);
+            }}
+          />
+          <TextField
+            margin="dense"
+            label="Email"
+            placeholder="Enter Email"
+            variant="outlined"
+            type="email"
             fullWidth
             required
             onChange={(e) => setEmail(e.target.value)}
@@ -86,27 +110,20 @@ const Login = () => {
             required
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FormControlLabel
-            control={<Checkbox name="checkedB" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             color="primary"
             variant="contained"
             style={btnstyle}
             fullWidth
-            onClick={() => onSignInClick(emailState, passwordState)}
+            onClick={() => onSignUpClick(emailState, passwordState)}
           >
-            Sign in
+            Sign up
           </Button>
-          <Typography>
-            <Link href="#">Forgot password ?</Link>
-          </Typography>
         </Paper>
       </Grid>
     </>
   );
 };
 
-export default Login;
+export default SignUp;
