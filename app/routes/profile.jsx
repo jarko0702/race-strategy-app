@@ -4,7 +4,7 @@ import { auth, db } from "../root";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function meta({}) {
   return [
@@ -37,14 +37,18 @@ export default function Profile() {
       </>
     );
   } else {
-    getDoc(doc(db, "Users", user.uid))
-      .then((querySnapshot) => {
-        const docData = querySnapshot.data();
-        setUserRole(docData.role);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    useEffect(
+      () =>
+        getDoc(doc(db, "Users", user.uid))
+          .then((querySnapshot) => {
+            const docData = querySnapshot.data();
+            setUserRole(docData.role);
+          })
+          .catch((error) => {
+            console.log(error);
+          }),
+      []
+    );
     return (
       <>
         <Header />
