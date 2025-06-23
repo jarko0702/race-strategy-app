@@ -37,18 +37,15 @@ export default function Profile() {
       </>
     );
   } else {
-    useEffect(
-      () =>
-        getDoc(doc(db, "Users", user.uid))
-          .then((querySnapshot) => {
-            const docData = querySnapshot.data();
-            setUserRole(docData.role);
-          })
-          .catch((error) => {
-            console.log(error);
-          }),
-      []
-    );
+    getDoc(doc(db, "Users", user.uid))
+      .then((querySnapshot) => {
+        const docData = querySnapshot.data();
+        setUserRole(docData.role);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     return (
       <>
         <Header />
