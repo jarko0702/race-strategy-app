@@ -3,11 +3,11 @@ on:
   push:
     branches:
       - dev
-env:
-  VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
 
 jobs:
   build_and_deploy:
+    env:
+      VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,5 +16,5 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RACE_STRATAGY_APP }}
-          channelId: dev
+          channelId: live
           projectId: race-stratagy-app
