@@ -14,9 +14,8 @@ export function meta({}) {
 }
 
 export default function Profile() {
-  const user = auth.currentUser;
-
   let navigate = useNavigate();
+  const user = auth.currentUser;
   const [userRole, setUserRole] = useState();
   const [errorMessage, setErrorMessage] = useState();
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import {
   Grid,
   Paper,
@@ -36,12 +37,15 @@ const SignIn = () => {
   const [errorCode, setErrorCode] = useState();
   const [errorMessage, setErrorMessage] = useState();
 
+  const [userLocalStorage, setUserLocalStorage] = useLocalStorage("user", null);
+
   function onSignInClick(email, password) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up
         const user = userCredential.user;
         // ...
+        setUserLocalStorage(user);
         console.log(user);
         return navigate("/profile");
       })
