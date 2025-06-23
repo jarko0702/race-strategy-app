@@ -33,7 +33,7 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDwUBTLWIg61tWSlmYCDzBBL38D-tIcc7M",
+  apiKey: import.meta.env.VITE_API_KEY,
   authDomain: "race-stratagy-app.firebaseapp.com",
   projectId: "race-stratagy-app",
   storageBucket: "race-stratagy-app.firebasestorage.app",
